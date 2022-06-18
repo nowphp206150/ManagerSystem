@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+</head>
+<body>
+<h1>用户注册</h1>
+<form method="post" action="/register/">   # 这里是提交给原网址
+    {% csrf_token %}   # 当提交表单后出现404禁止页面的时候，加上这个
+    <input type="text" name="user" placeholder="用户名">
+    <input type="text" name="pwd" placeholder="密码">
+    <input type="text" name="age" placeholder="年龄">
+    <input type="submit" value="提交"/>
+</form>
+</body>
+</html>

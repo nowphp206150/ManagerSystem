@@ -1,0 +1,73 @@
+{% extends 'navigate.html'%}
+
+{% block content %}
+    <div class="container">
+        <div style="margin-bottom: 10px" >
+            <a href="/prettynum/add/" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                新建靓号</a>
+            <div style="float: right; width: 300px;">
+                <form href="/prettynum/" method="get">
+                <div class="input-group">
+                        {% csrf_token %}
+                  <input type="text" name='query' class="form-control" placeholder="Search for..." value={{ query }}>
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                    </button>
+                  </span>
+                </div>
+                    </form>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><div class="glyphicon glyphicon-th-list" aria-hidden="true" style="display: inline-block"></div>  靓号信息</div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>靓号</td>
+                        <td>价格</td>
+                        <td>靓号等级</td>
+                        <td>状态</td>
+                        <td>操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for obj in nums %}
+                    <tr>
+                        <th>{{ obj.mobile }}</th>
+                        <th>{{ obj.price }}</th>
+                        <th>{{ obj.level }}级</th>
+                        {% if obj.status == 0 %}
+                        <th>未使用</th>
+                        {% else %}
+                        <th>已占用</th>
+                        {% endif %}
+                        <th>
+                            <a href="/prettynum/edit/?mobile={{ obj.mobile }}" methods="GET" class="btn  btn-sm btn-success"/>编辑
+                            <a href="/prettynum/delete/?mobile={{ obj.mobile }}" methods="GET" class="btn btn-sm btn-danger"/>  删除
+                        </th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    <nav aria-label="...">
+      <ul class="pagination">
+        <li class=""><a href="/prettynum/?query={{ query }}&page={{ page|add:-1 }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+        {% for i in ranges %}
+            {% if i == page %}
+                <li class="active"><a href="/prettynum/?query={{ query }}&page={{ i }}">{{ i }}<span class="sr-only">(current)</span></a></li>
+            {% else %}
+                <li class=""><a href="/prettynum/?query={{ query }}&page={{ i }}">{{ i }}<span class="sr-only">(current)</span></a></li>
+            {% endif %}
+        {% endfor %}
+         <li>
+          <a href="/prettynum/?query={{ query }}&page={{ page|add:1 }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    </div>
+{% endblock %}

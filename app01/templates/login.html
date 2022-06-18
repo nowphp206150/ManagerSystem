@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href={% static "/plugins/bootstrap-3.4.1/css/bootstrap.css" %}/>
+    <style>
+        .account {
+            width:400px;
+            border: 1px solid #dddddd;
+            barder-radius: 5px;
+            box-shadow: 5px 5px 20px #aaa;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top:100px;
+            padding:20px 40pX;
+        }
+        .account h2 {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body background="../static/img/login1.jpg">
+    <div class="account">
+{#        <img src="../static/img/login.png"/>#}
+    <h2>用户登录</h2>
+        <form href="/login/" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>用户名</label>
+{#                <input type=text" name="name" class="form-control" placeholder="用户名">#}
+                {{ form.name }}
+                <span style="color: red">
+                    {{ error.name.0 }}
+                </span>
+            </div>
+            <div class= "form-group">
+                <label>密码</label>
+{#                <input type="password" name="pwd" class="form-control" placeholder="密码">#}
+                {{ form.password }}
+                <span style="color: red">
+                    {{ error.password.0 }}
+                </span>
+            </div>
+            <div class="form-group">
+                <label>验证码</label>
+                <div class="row">
+                    <div class="col-xs-7">
+                        {{ form.code }}
+                    </div>
+                    <div class="col-xs-5">
+                        <img src="../static/img/code.png" id='imgpic'/>
+                    </div>
+                </div>
+                <span style="color: red">
+                    {{ error.code.0 }}
+                </span>
+            </div>
+            <input type="submit" value="登录"class="btn btn-primary"/>
+        </form>
+    </div>
+    <script src= {% static "js/jquery-3.6.0.min.js" %}></script>
+    <script src={% static "/plugins/bootstrap-3.4.1/js/bootstrap.min.js" %}></script>
+    <script type="text/javascript">
+        $(function (){
+            check_code();
+        })
+        function check_code() {
+            $('#imgpic').click(function () {
+                $.ajax({
+                    url: '/imgcode/',
+                    type: 'post',
+                    data: {
+                        name: 'huawei'
+                    },
+                    success: function (res) {
+                        {#alert(res)#}
+                    }
+                })
+                setTimeout("$('#imgpic').attr('src','../static/img/code.png?temp='+ (new Date().getTime().toString(36)));", 100)
+            })
+        }
+
+    </script>
+</body>
+</html>

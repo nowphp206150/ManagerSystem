@@ -1,0 +1,219 @@
+{% extends 'navigate.html' %}
+
+{% block content %}
+    <!-- Button trigger modal -->
+    <div class="container">
+        <button type="button" style="margin-bottom: 10px" class="btn btn-success" data-toggle="modal" data-target="#myModal">
+          <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+            新建订单
+        </button>
+        <div class="panel panel-default">
+            <div class="panel-heading"><div class="glyphicon glyphicon-th-list" aria-hidden="true" style="display: inline-block"></div>  订单信息</div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>订单号</td>
+                        <td>靓号</td>
+                        <td>价格</td>
+                        <td>状态</td>
+                        <td>购买用户</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for obj in orders %}
+                    <tr>
+                        <th>{{ obj.order_id }}</th>
+                        <th>{{ obj.goods }}</th>
+                        <th>{{ obj.price }}</th>
+                        {% if obj.status == 0 %}
+                        <th>待支付</th>
+                        {% else %}
+                        <th>已支付</th>
+                        {% endif %}
+                        <th>{{ obj.user_id }}</th>
+                        <th>
+{#                            <a href="/user/edit/?id={{ obj.id }}" methods="GET" class="btn btn-sm btn-success"/>编辑#}
+                            <input oid ='{{ obj.order_id }}'type="button" class="btn btn-sm btn-success btn-edit" value="编辑"/>
+                            <input oid='{{ obj.order_id }}' type="button" class="btn btn-sm btn-danger btn-delete" value="删除"/>
+                        </th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    <nav aria-label="...">
+      <ul class="pagination">
+        <li class=""><a href="/order/?page={{ page|add:-1 }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+        {% for i in ranges %}
+            {% if i == page %}
+                <li class="active"><a href="/order/?page={{ i }}">{{ i }}<span class="sr-only">(current)</span></a></li>
+            {% else %}
+                <li class=""><a href="/order/?page={{ i }}">{{ i }}<span class="sr-only">(current)</span></a></li>
+            {% endif %}
+        {% endfor %}
+         <li>
+          <a href="/order/?page={{ page|add:1 }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">用户订单</h4>
+          </div>
+          <div class="modal-body">
+              <form id="myform" novalidate>
+                  <div class="clearfix">
+                      <div class="form-group">
+                        <label class="col-xs-12 control-label">订单号</label>
+                        <div class="col-xs-12">
+                            {{ form.order_id }}
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-xs-12 control-label">靓号</label>
+                        <div class="col-xs-12">
+                            {{ form.goods }}
+                            <span style="color:red;"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-xs-12 control-label">价格</label>
+                        <div class="col-xs-12">
+                            {{ form.price }}
+                            <span style="color:red;"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-xs-12 control-label">状态</label>
+                        <div class="col-xs-12">
+                            {{ form.status }}
+                            <span style="color:red;"></span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="col-xs-12 control-label">用户</label>
+                        <div class="col-xs-12">
+                            {{ form.user_id }}
+                            <span style="color:red;"></span>
+                        </div>
+                      </div>
+                  </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" id="close">关闭</button>
+            <button type="button" class="btn btn-primary" id="save">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel" style="color: red">警告!!!</h4>
+          </div>
+          <div class="modal-body">
+              <h4 style="color: red;text-align: center">确定要删除吗？</h4>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" id="delete_ok">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        clickme();
+        var order_id
+        function clickme(){
+            $('#save').click(function (){
+                $.ajax({
+                    url:'/order/add/',
+                    data:$('#myform').serialize(),
+                    type:"post",
+                    datatype:'JSON',
+                    success:function (res){
+                        if(res.status) {
+                            alert('成功')
+
+                            $('#myform')[0].reset();
+
+                            $('#myModal').modal('hide')
+
+                            location.reload()
+                        }
+                        else{
+                            for(var i in res.error){
+                                idm=i.toString()
+                                console.log(res.error[i])
+                                $('#id_'+i.toString()).next().text(res.error[i])
+                            }
+                        }
+                    }
+                })
+            })
+            $('.btn-delete').click(function (){
+                $('#deleteModal').modal('show')
+                order_id=$(this).attr('oid')
+            })
+            $('#delete_ok').click(function () {
+                $.ajax({
+                    url:'/order/delete/',
+                    type: 'get',
+                    data: {
+                        order_id:order_id
+                    },
+                    success:function (res) {
+                        $('#deletemodal').modal('hide')
+                        alert(res)
+
+                        location.reload()
+                    }
+                })
+            })
+            $('.btn-edit').click(function () {
+                order_id=$(this).attr('oid')
+                $.ajax({
+                    url:'/order/edit/',
+                    type:'get',
+                    datatype: 'JSON',
+                    data:{
+                        order_id:order_id,
+                    },
+                    success:function (res) {
+                        if(res.status){
+                            data=res.data
+                            for(var i in data){
+                                $('#id_'+i.toString()).val(data[i.toString()])
+                            }
+                            $('#myModal').modal('show')
+                        }else{
+                            alert('数据读取失败，请刷新页面重试！')
+                        }
+                    }
+                })
+            })
+            $('#close').click(function (){
+                {# 重写一下关闭事件，保证关闭或者保存之后都能清除掉表中已有的数据 #}
+                $('#myform')[0].reset()
+
+                $('#myModal').modal('hide')
+            })
+        }
+    </script>
+{% endblock %}

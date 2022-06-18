@@ -1,0 +1,27 @@
+{% extends 'navigate.html' %}
+
+{% block content %}
+    <div class="panel panel-default container">
+        <div class="panel-heading">部门信息编辑</div>
+    <form class="form-horizontal" action="/depart/edit/" method="post">
+        {% csrf_token %}
+      <div class="form-group">
+        <label for="inputEmail3" class="col-sm-2 control-label">部门ID</label>
+        <div class="col-sm-10">
+          <input type="text" name="id" class="form-control" readonly="readonly" id="inputEmail3" value={{ depart.id }}>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">部门名</label>
+        <div class="col-sm-10">
+          <input type="text" name="title" class="form-control" id="inputPassword3"  value={{ depart.title }}>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-default">保存</button>
+        </div>
+      </div>
+    </form>
+    </div>
+{% endblock %}

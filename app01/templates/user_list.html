@@ -1,0 +1,75 @@
+{% extends 'navigate.html' %}
+
+{% block content %}
+    <div class="container">
+        <div style="margin-bottom: 10px">
+            <a href="/user/add/" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                增加用户</a>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><div class="glyphicon glyphicon-th-list" aria-hidden="true" style="display: inline-block"></div>  用户信息</div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>用户ID</td>
+                        <td>用户名</td>
+                        <td>用户密码</td>
+                        <td>用户年龄</td>
+                        <td>账户余额</td>
+                        <td>注册时间</td>
+                        <td>所属部门</td>
+                        <td>性别</td>
+                        <td>用户IP</td>
+                        <td>操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for obj in users %}
+                    <tr>
+                        <th>{{ obj.id }}</th>
+                        <th>{{ obj.name }}</th>
+                        <th>{{ obj.password }}</th>
+                        <th>{{ obj.age }}</th>
+                        <th>{{ obj.account }}</th>
+                        <th>{{ obj.create_time }}</th>
+                        <th>{{ obj.depart_id }}</th>
+                        {% if obj.sex == 1 %}
+                        <th>男</th>
+                        {% else %}
+                        <th>女</th>
+                        {% endif %}
+                        {% if obj.ip == None %}
+                            <th>不存在</th>
+                        {% else %}
+                            <th>{{ obj.ip }}</th>
+                        {% endif %}
+                        <th>
+                            <a href="/user/edit/?id={{ obj.id }}" methods="GET" class="btn btn-sm btn-success"/>编辑
+                            <a href="/user/delete/?id={{ obj.id }}" methods="GET" class="btn btn-sm btn-danger"/>删除
+                        </th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    <nav aria-label="...">
+      <ul class="pagination">
+        <li class=""><a href="/user/?page={{ page|add:-1 }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+        {% for i in ranges %}
+            {% if i == page %}
+                <li class="active"><a href="/user/?page={{ i }}">{{ i }}<span class="sr-only">(current)</span></a></li>
+            {% else %}
+                <li class=""><a href="/user/?page={{ i }}">{{ i }}<span class="sr-only">(current)</span></a></li>
+            {% endif %}
+        {% endfor %}
+         <li>
+          <a href="/user/?page={{ page|add:1 }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    </div>
+
+{% endblock %}
